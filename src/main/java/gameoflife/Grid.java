@@ -2,13 +2,14 @@ package gameoflife;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 final class Grid {
 
-    private final Cell[][] cells;
+    private final List<List<Cell>> cells;
 
-    private Grid(Cell[][] cells) {
+    private Grid(List<List<Cell>> cells) {
         this.cells = cells;
     }
 
@@ -16,25 +17,24 @@ final class Grid {
         final var cells = Arrays
                 .stream(grid.split("\n"))
                 .map(Grid::lineToCells)
-                .toArray(Cell[][]::new);
+                .toList();
         return new Grid(cells);
     }
 
-    private static Cell[] lineToCells(String line) {
+    private static List<Cell> lineToCells(String line) {
        return line
                .chars()
                .filter(c -> c == '.' || c == '*')
                .mapToObj(Cell::fromChar)
-               .toArray(Cell[]::new);
+               .toList();
     }
 
     public Grid next() {
-        final Cell[][] cells = {
-                {Cell.dead(), Cell.dead(), Cell.dead()},
-                {Cell.dead(), Cell.dead(), Cell.dead()},
-                {Cell.dead(), Cell.dead(), Cell.dead()}
-        };
-        return new Grid(cells);
+        return new Grid(List.of(
+                List.of(Cell.dead(), Cell.dead(), Cell.dead()),
+                List.of(Cell.dead(), Cell.dead(), Cell.dead()),
+                List.of(Cell.dead(), Cell.dead(), Cell.dead())
+        ));
     }
 
     @Override
@@ -42,18 +42,17 @@ final class Grid {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Grid grid = (Grid) o;
-        return Arrays.deepEquals(cells, grid.cells);
+        return cells.equals(grid.cells);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(cells);
+        return Objects.hash(cells);
     }
 
     @Override
     public String toString() {
-        return Arrays.stream(this.cells)
-                .map(Arrays::asList)
+        return this.cells.stream()
                 .map(Grid::cellsToListOfString)
                 .map(line -> String.join(" ", line))
                 .collect(Collectors.joining("\n"));
