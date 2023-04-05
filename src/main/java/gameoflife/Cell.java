@@ -19,6 +19,12 @@ final class Cell {
          return new Cell(State.DEAD);
      }
 
+    public static Cell fromChar(int c) {
+         return c == '.'
+                 ? Cell.dead()
+                 : Cell.alive();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,5 +36,12 @@ final class Cell {
     @Override
     public int hashCode() {
         return Objects.hash(state);
+    }
+
+    @Override
+    public String toString() {
+        return this.state == State.ALIVE
+                ? "*"
+                : ".";
     }
 }

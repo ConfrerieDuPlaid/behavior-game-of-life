@@ -9,7 +9,7 @@ Feature: Fewer than two live neighbours
     . . .
     """
     When calculating the next generation
-    Then the grid should equal to
+    Then the grid should be equal to
     """
     . . .
     . . .
