@@ -3,6 +3,7 @@ package gameoflife;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 final class Grid {
@@ -13,21 +14,53 @@ final class Grid {
         this.cells = cells;
     }
 
-    public static Grid fromString(String grid) {
+    //region String Parsing
+    public static Optional<Grid> fromString(String stringGrid) {
         final var cells = Arrays
-                .stream(grid.split("\n"))
+                .stream(stringGrid.split("\n"))
                 .map(Grid::lineToCells)
                 .toList();
-        return new Grid(cells);
+
+        final var grid = new Grid(cells);
+        return grid.isValid()
+                ? Optional.of(grid)
+                : Optional.empty();
     }
 
     private static List<Cell> lineToCells(String line) {
-       return line
-               .chars()
-               .filter(c -> c == '.' || c == '*')
-               .mapToObj(Cell::fromChar)
-               .toList();
+        return line
+                .chars()
+                .filter(c -> c == '.' || c == '*')
+                .mapToObj(Cell::fromChar)
+                .flatMap(Optional::stream)
+                .toList();
     }
+    //endregion
+
+    //region Validation
+    private boolean isValid() {
+        if(this.haveNoRows() || this.haveNoColumns()) return false;
+
+        return this.cells
+                .stream()
+                .allMatch(line -> line.size() == this.firstLineSize());
+    }
+
+    private int firstLineSize() {
+        try { return this.cells.get(0).size(); }
+        catch (IndexOutOfBoundsException e) { return 0; }
+    }
+
+    private boolean haveNoRows() {
+        return this.cells.isEmpty();
+    }
+
+    private boolean haveNoColumns() {
+        try { return this.cells.get(0).isEmpty(); }
+        catch (IndexOutOfBoundsException e) { return true; }
+    }
+    //endregion
+
 
     public Grid next() {
         return new Grid(List.of(
@@ -37,6 +70,7 @@ final class Grid {
         ));
     }
 
+    //region Equals & Hash
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,7 +83,9 @@ final class Grid {
     public int hashCode() {
         return Objects.hash(cells);
     }
+    //endregion
 
+    //region ToString
     @Override
     public String toString() {
         return this.cells.stream()
@@ -64,4 +100,5 @@ final class Grid {
                 .map(Cell::toString)
                 .toList();
     }
+    //endregion
 }

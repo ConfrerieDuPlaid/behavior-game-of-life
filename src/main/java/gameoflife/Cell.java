@@ -1,9 +1,10 @@
 package gameoflife;
 
 import java.util.Objects;
+import java.util.Optional;
 
 final class Cell {
-    private enum State {ALIVE, DEAD};
+    public enum State {ALIVE, DEAD};
 
     private final State state;
 
@@ -19,10 +20,12 @@ final class Cell {
          return new Cell(State.DEAD);
      }
 
-    public static Cell fromChar(int c) {
-         return c == '.'
-                 ? Cell.dead()
-                 : Cell.alive();
+    public static Optional<Cell> fromChar(int c) {
+         return switch (c) {
+             case '.' -> Optional.of(Cell.dead());
+             case '*' -> Optional.of(Cell.alive());
+             default -> Optional.empty();
+         };
     }
 
     @Override
