@@ -7,9 +7,13 @@ import java.util.stream.IntStream;
 final class Grid {
 
     private final Map<Position, Cell> cells;
+    public final Integer width;
+    public final Integer height;
 
     private Grid(Map<Position, Cell> cells) {
         this.cells = cells;
+        this.width = this.getLineSize(0);
+        this.height = this.getFirstColumn().size();
     }
 
     public static Optional<Grid> of(Map<Position, Cell> cells) {
