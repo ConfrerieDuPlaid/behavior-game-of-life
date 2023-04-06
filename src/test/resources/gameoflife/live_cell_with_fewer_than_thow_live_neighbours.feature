@@ -1,4 +1,4 @@
-Feature: Fewer than two live neighbours
+Feature: Live cell with fewer than two live neighbours
   Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
 
   Scenario: A live cell alone

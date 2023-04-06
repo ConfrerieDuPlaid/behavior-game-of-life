@@ -1,4 +1,4 @@
-Feature: Move than three live neighbours
+Feature: Live cell with more than three live neighbours
   Any live cell with more than three live neighbours dies, as if by overcrowding.
 
   Scenario: Four live neighbours

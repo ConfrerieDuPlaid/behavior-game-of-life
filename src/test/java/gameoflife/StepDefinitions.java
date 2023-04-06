@@ -27,6 +27,11 @@ public class StepDefinitions {
         assertEquals(GridParser.fromString(grid).get(), this.grid);
     }
 
+    @Then("the cell in [{int},{int}] should be {cellState}")
+    public void the_cell_in_should_be_dead(int x, int y, Cell state) {
+        assertEquals(state, this.grid.cellAt(Position.of(x,y)).get());
+    }
+
     @Then("the cell in the {center} should be {cellState}")
     public void the_cell_in_should_be_dead(Position position, Cell state) {
         assertEquals(state, this.grid.cellAt(position).get());
@@ -39,7 +44,7 @@ public class StepDefinitions {
 
     @ParameterType("center")
     public Position center(String center){
-        return Position.of(this.grid.width/2, this.grid.height/2);
+        return Position.of(this.grid.width()/2, this.grid.height()/2);
     }
 
 }

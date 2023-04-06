@@ -7,13 +7,9 @@ import java.util.stream.IntStream;
 final class Grid {
 
     private final Map<Position, Cell> cells;
-    public final Integer width;
-    public final Integer height;
 
     private Grid(Map<Position, Cell> cells) {
-        this.cells = cells;
-        this.width = this.getLineSize(0);
-        this.height = this.getFirstColumn().size();
+        this.cells = new HashMap<>(cells);
     }
 
     public static Optional<Grid> of(Map<Position, Cell> cells) {
@@ -23,18 +19,16 @@ final class Grid {
                 : Optional.empty();
     }
 
-    private Integer height() {
+    public Integer width() {
+        return this.getLineSize(0);
+    }
+
+    public Integer height() {
         return this.getFirstColumn().size();
     }
 
     public Map<Position, Cell> cells() {
-        return this.cells;
-    }
-
-    public Grid setCellAt(Position position, Cell cell) {
-        final var cells = this.cells();
-        cells.put(position, cell);
-        return Grid.of(cells).get();
+        return Collections.unmodifiableMap(this.cells);
     }
 
     //region Validation
@@ -67,16 +61,28 @@ final class Grid {
     //region Generation
     public Grid next() {
         final var newMap = new HashMap<Position, Cell>();
-        this.getAllPositions()
-                .forEach(p -> newMap.put(p, this.nextCell(p)));
+        this.getAllPositions().forEach(position -> newMap.put(position, this.nextCellAt(position)));
         return Grid.of(newMap).get();
     }
 
-    private Cell nextCell(Position position) {
-        return switch (this.liveNeighboursAround(position)) {
-            case 3 -> Cell.alive;
+    private Cell nextCellAt(Position position) {
+        final var numberOfNeighbours = this.liveNeighboursAround(position);
+        return this.cellAt(position).get().isAlive()
+                ? this.nextLiveCellAt(numberOfNeighbours)
+                : this.nextDeadCellAt(numberOfNeighbours);
+    }
+
+    private Cell nextLiveCellAt(Integer numberOfNeighbours) {
+        return switch (numberOfNeighbours) {
+            case 2, 3 -> Cell.alive;
             default -> Cell.dead;
         };
+    }
+
+    private Cell nextDeadCellAt(Integer numberOfNeighbours) {
+        return numberOfNeighbours == 3
+                ? Cell.alive
+                : Cell.dead;
     }
 
     private Integer liveNeighboursAround(Position position) {
@@ -91,10 +97,6 @@ final class Grid {
 
     public Optional<Cell> cellAt(Position p) {
         return Optional.ofNullable(this.cells.get(p));
-    }
-
-    private GridWith with(Cell cell) {
-        return new GridWith(this, cell);
     }
 
     private List<Position> getAllPositions() {
