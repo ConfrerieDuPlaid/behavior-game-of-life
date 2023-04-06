@@ -32,7 +32,6 @@ final class Cell {
             case "alive" -> Optional.of(alive);
             default -> Optional.empty();
         };
-
     }
 
     @Override
@@ -45,10 +44,7 @@ final class Cell {
     //<editor-fold desc="Equals & Hash">
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cell cell = (Cell) o;
-        return state == cell.state;
+        return this == o;
     }
 
     @Override

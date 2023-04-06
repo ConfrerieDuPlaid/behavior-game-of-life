@@ -3,6 +3,7 @@ package gameoflife;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 final class Grid {
 
@@ -11,7 +12,7 @@ final class Grid {
     public final Integer width;
 
     private Grid(Map<Position, Cell> cells) {
-        this.cells = new HashMap<>(cells);
+        this.cells = new HashMap<>(cells); // shallow copy
         this.width = this.getLine(0).size();
         this.height = this.getColumn(0).size();
     }
@@ -24,6 +25,7 @@ final class Grid {
     }
 
     private boolean isValid() {
+        // TODO
         if(this.cells.isEmpty()) return false;
 
         final int firstLineSize = this.getLine(0).size();
@@ -31,7 +33,7 @@ final class Grid {
                 .allMatch(y -> getLine(y).size() == firstLineSize);
     }
 
-    private Map<Position, Cell> getLine(int row) {
+    public Map<Position, Cell> getLine(int row) {
         return this.cells.entrySet().stream()
                 .filter(entry -> entry.getKey().y() == row)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -43,30 +45,30 @@ final class Grid {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public List<Cell> liveNeighboursAround(Position position) {
-        return this.neighboursAround(position)
-                .stream()
-                .filter(Cell::isAlive)
-                .toList();
+    public Stream<Cell> liveNeighboursAround(Position position) {
+        return this.neighboursAround(position).filter(Cell::isAlive);
     }
 
-    private List<Cell> neighboursAround(Position position) {
+    private Stream<Cell> neighboursAround(Position position) {
         return position.positionsAround()
-                .stream()
                 .map(this::cellAt)
-                .filter(Optional::isPresent).map(Optional::get)
-                .toList();
+                .filter(Optional::isPresent).map(Optional::get);
     }
 
     public Optional<Cell> cellAt(Position p) {
         return Optional.ofNullable(this.cells.get(p));
     }
 
-    public List<Position> getAllPositions() {
-        return this.cells.keySet().stream().toList();
+    public Stream<Position> getAllPositions() {
+        return this.cells.keySet().stream();
     }
 
-    //region Equals & Hash
+    //region ToString & Equals & HashCode
+    @Override
+    public String toString() {
+        return GridSerializer.serialize(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,27 +80,6 @@ final class Grid {
     @Override
     public int hashCode() {
         return Objects.hash(cells);
-    }
-    //endregion
-
-    //region ToString
-    @Override
-    public String toString() {
-        return IntStream.range(0, this.height)
-                .mapToObj(this::getLine)
-                .map(Grid::cellsToListOfString)
-                .map(line -> String.join(" ", line))
-                .collect(Collectors.joining("\n"));
-    }
-
-
-    private static List<String> cellsToListOfString(Map<Position, Cell> cells) {
-        return cells.entrySet()
-                .stream()
-                .sorted(Comparator.comparingInt(p -> p.getKey().x()))
-                .map(Map.Entry::getValue)
-                .map(Cell::toString)
-                .toList();
     }
     //endregion
 }

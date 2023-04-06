@@ -1,9 +1,9 @@
 package gameoflife;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-public class Position {
-
+final class Position {
     private static final Map<Integer, Position> _cache = new HashMap<>();
 
     private final Integer x;
@@ -31,11 +31,11 @@ public class Position {
     /**
      * @return the 8 positions around this position (self not included)
      */
-    public List<Position> positionsAround() {
+    public Stream<Position> positionsAround() {
         // [x-1,y-1] | [x,y-1] | [x+1,y-1]
         // [x-1,  y] | ~~~~~~~ | [x+1,  y]
         // [x-1,y+1] | [x,y+1] | [x+1,y+1]
-        return List.of(
+        return Stream.of(
                 Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
                 Position.of(x-1, y), Position.of(x+1, y),
                 Position.of(x-1, y+1), Position.of(x, y+1), Position.of(x+1, y+1)

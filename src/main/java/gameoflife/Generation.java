@@ -23,10 +23,10 @@ final class Generation {
     }
 
     private Cell nextCellAt(Position position) {
-        final var numberOfNeighbours = this.grid.liveNeighboursAround(position).size();
+        final var numberOfLiveNeighbours = this.grid.liveNeighboursAround(position).toList().size();
         return this.grid.cellAt(position).get().isAlive()
-                ? this.nextLiveCellAt(numberOfNeighbours)
-                : this.nextDeadCellAt(numberOfNeighbours);
+                ? this.nextLiveCellAt(numberOfLiveNeighbours)
+                : this.nextDeadCellAt(numberOfLiveNeighbours);
     }
 
     private Cell nextLiveCellAt(Integer numberOfNeighbours) {

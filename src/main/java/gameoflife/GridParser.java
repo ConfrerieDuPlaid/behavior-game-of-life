@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class GridParser {
+final class GridParser {
     private GridParser() {
         throw new AssertionError(); // Interrupt instantiation
     }
