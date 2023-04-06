@@ -4,8 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 final class Cell {
-    public enum State {ALIVE, DEAD};
-
+    private enum State {ALIVE, DEAD}
     private final State state;
 
      private Cell(State state) {
@@ -24,6 +23,14 @@ final class Cell {
     }
 
     @Override
+    public String toString() {
+        return this.state == State.ALIVE
+                ? "*"
+                : ".";
+    }
+
+    //<editor-fold desc="Equals & Hash">
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -35,11 +42,5 @@ final class Cell {
     public int hashCode() {
         return Objects.hash(state);
     }
-
-    @Override
-    public String toString() {
-        return this.state == State.ALIVE
-                ? "*"
-                : ".";
-    }
+    //</editor-fold>
 }

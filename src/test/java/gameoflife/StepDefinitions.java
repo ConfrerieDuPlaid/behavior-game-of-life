@@ -13,7 +13,7 @@ public class StepDefinitions {
 
     @Given("the grid")
     public void the_grid(String grid) {
-        this.grid = Grid.fromString(grid).get();
+        this.grid = GridParser.fromString(grid).get();
     }
 
 
@@ -25,6 +25,6 @@ public class StepDefinitions {
 
     @Then("the grid should be equal to")
     public void theGridShouldEqualTo(String grid) {
-        assertEquals(Grid.fromString(grid).get(), this.grid);
+        assertEquals(GridParser.fromString(grid).get(), this.grid);
     }
 }

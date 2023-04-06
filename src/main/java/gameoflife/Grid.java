@@ -12,6 +12,13 @@ final class Grid {
         this.cells = cells;
     }
 
+    public static Optional<Grid> of(Map<Position, Cell> cells) {
+        final var grid = new Grid(cells);
+        return grid.isValid()
+                ? Optional.of(grid)
+                : Optional.empty();
+    }
+
     private Integer height() {
         return this.getFirstColumn().size();
     }
@@ -23,43 +30,8 @@ final class Grid {
     public Grid setCellAt(Position position, Cell cell) {
         final var cells = this.cells();
         cells.put(position, cell);
-        return Grid.fromMap(cells).get();
+        return Grid.of(cells).get();
     }
-
-    //region String Parsing
-    public static Optional<Grid> fromString(String stringGrid) {
-        final var lines = stringGrid.split("\n");
-        final var cells = IntStream
-                .range(0, lines.length)
-                .mapToObj(y -> Grid.stringLineToCells(y, lines[y]))
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        return Grid.fromMap(cells);
-    }
-
-    public static Optional<Grid> fromMap(Map<Position, Cell> cells) {
-        final var grid = new Grid(cells);
-        return grid.isValid()
-                ? Optional.of(grid)
-                : Optional.empty();
-    }
-
-    private static Map<Position, Cell> stringLineToCells(int lineIndex, String line) {
-        final var cells = line
-                .chars()
-                .filter(c -> c == '.' || c == '*')
-                .mapToObj(Cell::fromChar)
-                .flatMap(Optional::stream)
-                .toList();
-
-        final var map = new HashMap<Position, Cell>();
-        IntStream.range(0, cells.size())
-                .forEach(columnIndex -> map.put(Position.of(columnIndex,lineIndex).get(), cells.get(columnIndex)));
-
-        return map;
-    }
-    //endregion
 
     //region Validation
     private boolean isValid() {
