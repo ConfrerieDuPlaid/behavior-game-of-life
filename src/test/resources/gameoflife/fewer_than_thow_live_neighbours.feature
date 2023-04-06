@@ -1,5 +1,5 @@
 Feature: Fewer than two live neighbours
-  Any live cell with fewer than two live neighbours dies
+  Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
 
   Scenario: A live cell alone
     Given the grid
@@ -34,14 +34,16 @@ Feature: Fewer than two live neighbours
   Scenario: many live cells but not neighbours
     Given the grid
     """
-    * . *
-    . * .
-    * . *
+    * . . . . .
+    . . . . * .
+    * . . . . .
+    . . . * . .
     """
     When calculating the next generation
     Then the grid should be equal to
     """
-    . . .
-    . . .
-    . . .
+    . . . . . .
+    . . . . . .
+    . . . . . .
+    . . . . . .
     """

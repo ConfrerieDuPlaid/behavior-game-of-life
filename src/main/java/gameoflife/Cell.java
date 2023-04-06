@@ -12,18 +12,13 @@ final class Cell {
          this.state = state;
      }
 
-     public static Cell alive() {
-         return new Cell(State.ALIVE);
-     }
-
-     public static Cell dead() {
-         return new Cell(State.DEAD);
-     }
+    public static final Cell alive = new Cell(State.ALIVE);
+    public static final Cell dead = new Cell(State.DEAD);
 
     public static Optional<Cell> fromChar(int c) {
          return switch (c) {
-             case '.' -> Optional.of(Cell.dead());
-             case '*' -> Optional.of(Cell.alive());
+             case '.' -> Optional.of(Cell.dead);
+             case '*' -> Optional.of(Cell.alive);
              default -> Optional.empty();
          };
     }
