@@ -1,9 +1,6 @@
 package gameoflife;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class Position {
 
@@ -25,13 +22,24 @@ public class Position {
         return y;
     }
 
-    public static Optional<Position> of(Integer x, Integer y) {
-        try{
-            int key = Objects.hash(Objects.requireNonNull(x), Objects.requireNonNull(y));
-            if(!Position._cache.containsKey(key)) Position._cache.put(key, new Position(x,y));
-            return Optional.ofNullable(Position._cache.get(key));
-        }
-        catch (NullPointerException npe) { return Optional.empty(); }
+    public static Position of(Integer x, Integer y) {
+        final int hash = Objects.hash(x, y);
+        if(!Position._cache.containsKey(hash)) Position._cache.put(hash, new Position(x,y));
+        return Position._cache.get(hash);
+    }
+
+    /**
+     * @return the 8 positions around this position (self not included)
+     */
+    public List<Position> positionsAround() {
+        // [-1,-1] | [ x,-1] | [+1,-1]
+        // [-1, y] | ~~~~~~~ | [+1, y]
+        // [-1,+1] | [ x,+1] | [+1,+1]
+        return List.of(
+                Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
+                Position.of(x-1, y), Position.of(x+1, y),
+                Position.of(x-1, y+1), Position.of(x, y+1), Position.of(x+1, y+1)
+        );
     }
 
     @Override

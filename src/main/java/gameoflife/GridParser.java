@@ -32,7 +32,7 @@ public final class GridParser {
 
         final var map = new HashMap<Position, Cell>();
         IntStream.range(0, cells.size())
-                .forEach(columnIndex -> map.put(Position.of(columnIndex,lineIndex).get(), cells.get(columnIndex)));
+                .forEach(columnIndex -> map.put(Position.of(columnIndex,lineIndex), cells.get(columnIndex)));
 
         return map;
     }

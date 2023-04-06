@@ -19,16 +19,16 @@ Feature: Fewer than two live neighbours
   Scenario: one live cell neighbour
     Given the grid
     """
-    . . .
-    . * *
-    . . .
+    . . . .
+    . * * .
+    . . . .
     """
     When calculating the next generation
     Then the grid should be equal to
     """
-    . . .
-    . . .
-    . . .
+    . . . .
+    . . . .
+    . . . .
     """
 
   Scenario: many live cells but not neighbours

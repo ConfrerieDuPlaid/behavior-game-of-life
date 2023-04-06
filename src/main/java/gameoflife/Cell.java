@@ -4,6 +4,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 final class Cell {
+    public boolean isAlive() {
+        return this.state == State.ALIVE;
+    }
+
     private enum State {ALIVE, DEAD}
     private final State state;
 
@@ -20,6 +24,15 @@ final class Cell {
              case '*' -> Optional.of(Cell.alive);
              default -> Optional.empty();
          };
+    }
+
+    public static Optional<Cell> fromString(String state) {
+        return switch (state) {
+            case "dead" -> Optional.of(Cell.dead);
+            case "alive" -> Optional.of(Cell.alive);
+            default -> Optional.empty();
+        };
+
     }
 
     @Override

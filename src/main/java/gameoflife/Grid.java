@@ -39,7 +39,7 @@ final class Grid {
 
         final int firstLineSize = this.getLine(0).entrySet().size();
         return this.intStreamOnRowIndex()
-                .anyMatch(y -> getLineSize(y) == firstLineSize);
+                .allMatch(y -> getLineSize(y) == firstLineSize);
     }
 
     private int getLineSize(int y) {
@@ -62,14 +62,31 @@ final class Grid {
 
     //region Generation
     public Grid next() {
-        return this.getAllPositions()
-                .stream()
-                .map(this::nextCell)
-                .reduce((a, b) -> b).orElse(this);
+        final var newMap = new HashMap<Position, Cell>();
+        this.getAllPositions()
+                .forEach(p -> newMap.put(p, this.nextCell(p)));
+        return Grid.of(newMap).get();
     }
 
-    private Grid nextCell(Position position) {
-        return this.with(Cell.dead).at(position);
+    private Cell nextCell(Position position) {
+        return switch (this.liveNeighboursAround(position)) {
+            case 3 -> Cell.alive;
+            default -> Cell.dead;
+        };
+    }
+
+    private Integer liveNeighboursAround(Position position) {
+        return (int) position.positionsAround()
+                .stream()
+                .map(this::cellAt)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(Cell::isAlive)
+                .count();
+    }
+
+    public Optional<Cell> cellAt(Position p) {
+        return Optional.ofNullable(this.cells.get(p));
     }
 
     private GridWith with(Cell cell) {
