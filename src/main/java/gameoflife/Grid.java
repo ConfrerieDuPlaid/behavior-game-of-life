@@ -23,11 +23,10 @@ final class Grid {
                 : Optional.empty();
     }
 
-    //region Validation
     private boolean isValid() {
         if(this.cells.isEmpty()) return false;
 
-        final int firstLineSize = this.getLine(0).entrySet().size();
+        final int firstLineSize = this.getLine(0).size();
         return IntStream.range(0, this.height)
                 .allMatch(y -> getLine(y).size() == firstLineSize);
     }
@@ -43,16 +42,20 @@ final class Grid {
                 .filter(entry -> entry.getKey().x() == index)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
-    //endregion
 
-    public Integer liveNeighboursAround(Position position) {
-        return (int) position.positionsAround()
+    public List<Cell> liveNeighboursAround(Position position) {
+        return this.neighboursAround(position)
+                .stream()
+                .filter(Cell::isAlive)
+                .toList();
+    }
+
+    private List<Cell> neighboursAround(Position position) {
+        return position.positionsAround()
                 .stream()
                 .map(this::cellAt)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .filter(Cell::isAlive)
-                .count();
+                .filter(Optional::isPresent).map(Optional::get)
+                .toList();
     }
 
     public Optional<Cell> cellAt(Position p) {
