@@ -8,33 +8,33 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitions {
-    private Grid grid;
+    private Generation generation;
 
     @Given("the grid")
     public void the_grid(String grid) {
-        this.grid = GridParser.fromString(grid).get();
+        this.generation = new Generation(GridParser.fromString(grid).get());
     }
 
 
     @When("calculating the next generation")
     public void calculating_the_next_generation() {
-        this.grid = this.grid.next();
+        this.generation = this.generation.next();
     }
 
 
     @Then("the grid should be equal to")
     public void theGridShouldEqualTo(String grid) {
-        assertEquals(GridParser.fromString(grid).get(), this.grid);
+        assertEquals(GridParser.fromString(grid).get(), this.generation.grid());
     }
 
     @Then("the cell in [{int},{int}] should be {cellState}")
     public void the_cell_in_should_be_dead(int x, int y, Cell state) {
-        assertEquals(state, this.grid.cellAt(Position.of(x,y)).get());
+        assertEquals(state, this.generation.grid().cellAt(Position.of(x,y)).get());
     }
 
     @Then("the cell in the {center} should be {cellState}")
     public void the_cell_in_should_be_dead(Position position, Cell state) {
-        assertEquals(state, this.grid.cellAt(position).get());
+        assertEquals(state, this.generation.grid().cellAt(position).get());
     }
 
     @ParameterType("alive|dead")
@@ -44,7 +44,8 @@ public class StepDefinitions {
 
     @ParameterType("center")
     public Position center(String center){
-        return Position.of(this.grid.width()/2, this.grid.height()/2);
+        final var grid = generation.grid();
+        return Position.of(grid.width/2, grid.height/2);
     }
 
 }

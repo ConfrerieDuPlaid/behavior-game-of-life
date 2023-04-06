@@ -20,16 +20,16 @@ final class Cell {
 
     public static Optional<Cell> fromChar(int c) {
          return switch (c) {
-             case '.' -> Optional.of(Cell.dead);
-             case '*' -> Optional.of(Cell.alive);
+             case '.' -> Optional.of(dead);
+             case '*' -> Optional.of(alive);
              default -> Optional.empty();
          };
     }
 
     public static Optional<Cell> fromString(String state) {
         return switch (state) {
-            case "dead" -> Optional.of(Cell.dead);
-            case "alive" -> Optional.of(Cell.alive);
+            case "dead" -> Optional.of(dead);
+            case "alive" -> Optional.of(alive);
             default -> Optional.empty();
         };
 

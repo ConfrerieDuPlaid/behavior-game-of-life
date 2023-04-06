@@ -32,9 +32,9 @@ public class Position {
      * @return the 8 positions around this position (self not included)
      */
     public List<Position> positionsAround() {
-        // [-1,-1] | [ x,-1] | [+1,-1]
-        // [-1, y] | ~~~~~~~ | [+1, y]
-        // [-1,+1] | [ x,+1] | [+1,+1]
+        // [x-1,y-1] | [x,y-1] | [x+1,y-1]
+        // [x-1,  y] | ~~~~~~~ | [x+1,  y]
+        // [x-1,y+1] | [x,y+1] | [x+1,y+1]
         return List.of(
                 Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
                 Position.of(x-1, y), Position.of(x+1, y),

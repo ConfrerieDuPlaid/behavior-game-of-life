@@ -7,9 +7,13 @@ import java.util.stream.IntStream;
 final class Grid {
 
     private final Map<Position, Cell> cells;
+    public final Integer height;
+    public final Integer width;
 
     private Grid(Map<Position, Cell> cells) {
         this.cells = new HashMap<>(cells);
+        this.width = this.getLine(0).size();
+        this.height = this.getColumn(0).size();
     }
 
     public static Optional<Grid> of(Map<Position, Cell> cells) {
@@ -19,29 +23,13 @@ final class Grid {
                 : Optional.empty();
     }
 
-    public Integer width() {
-        return this.getLineSize(0);
-    }
-
-    public Integer height() {
-        return this.getFirstColumn().size();
-    }
-
-    public Map<Position, Cell> cells() {
-        return Collections.unmodifiableMap(this.cells);
-    }
-
     //region Validation
     private boolean isValid() {
         if(this.cells.isEmpty()) return false;
 
         final int firstLineSize = this.getLine(0).entrySet().size();
-        return this.intStreamOnRowIndex()
-                .allMatch(y -> getLineSize(y) == firstLineSize);
-    }
-
-    private int getLineSize(int y) {
-        return this.getLine(y).entrySet().size();
+        return IntStream.range(0, this.height)
+                .allMatch(y -> getLine(y).size() == firstLineSize);
     }
 
     private Map<Position, Cell> getLine(int row) {
@@ -50,42 +38,14 @@ final class Grid {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private Map<Position, Cell> getFirstColumn() {
+    private Map<Position, Cell> getColumn(int index) {
         return this.cells.entrySet().stream()
-                .filter(entry -> entry.getKey().x() == 0)
+                .filter(entry -> entry.getKey().x() == index)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
     //endregion
 
-
-    //region Generation
-    public Grid next() {
-        final var newMap = new HashMap<Position, Cell>();
-        this.getAllPositions().forEach(position -> newMap.put(position, this.nextCellAt(position)));
-        return Grid.of(newMap).get();
-    }
-
-    private Cell nextCellAt(Position position) {
-        final var numberOfNeighbours = this.liveNeighboursAround(position);
-        return this.cellAt(position).get().isAlive()
-                ? this.nextLiveCellAt(numberOfNeighbours)
-                : this.nextDeadCellAt(numberOfNeighbours);
-    }
-
-    private Cell nextLiveCellAt(Integer numberOfNeighbours) {
-        return switch (numberOfNeighbours) {
-            case 2, 3 -> Cell.alive;
-            default -> Cell.dead;
-        };
-    }
-
-    private Cell nextDeadCellAt(Integer numberOfNeighbours) {
-        return numberOfNeighbours == 3
-                ? Cell.alive
-                : Cell.dead;
-    }
-
-    private Integer liveNeighboursAround(Position position) {
+    public Integer liveNeighboursAround(Position position) {
         return (int) position.positionsAround()
                 .stream()
                 .map(this::cellAt)
@@ -99,14 +59,8 @@ final class Grid {
         return Optional.ofNullable(this.cells.get(p));
     }
 
-    private List<Position> getAllPositions() {
+    public List<Position> getAllPositions() {
         return this.cells.keySet().stream().toList();
-    }
-    //endregion
-
-
-    private IntStream intStreamOnRowIndex() {
-        return IntStream.range(0, this.height());
     }
 
     //region Equals & Hash
@@ -127,7 +81,7 @@ final class Grid {
     //region ToString
     @Override
     public String toString() {
-        return this.intStreamOnRowIndex()
+        return IntStream.range(0, this.height)
                 .mapToObj(this::getLine)
                 .map(Grid::cellsToListOfString)
                 .map(line -> String.join(" ", line))
