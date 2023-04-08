@@ -1,9 +1,11 @@
 package gameoflife;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.IntStream.range;
 
 final class Grid {
 
@@ -11,12 +13,14 @@ final class Grid {
     public final Integer height;
     public final Integer width;
 
+    // private constructor
     private Grid(Map<Position, Cell> cells) {
         this.cells = new HashMap<>(cells); // shallow copy
-        this.width = this.getLine(0).size();
-        this.height = this.getColumn(0).size();
+        this.width = this.line(0).size();
+        this.height = this.column(0).size();
     }
 
+    // static factory method
     public static Optional<Grid> of(Map<Position, Cell> cells) {
         final var grid = new Grid(cells);
         return grid.isValid()
@@ -28,21 +32,20 @@ final class Grid {
         // TODO
         if(this.cells.isEmpty()) return false;
 
-        final int firstLineSize = this.getLine(0).size();
-        return IntStream.range(0, this.height)
-                .allMatch(y -> getLine(y).size() == firstLineSize);
+        final int firstLineSize = this.line(0).size();
+        return range(0, this.height).allMatch(y -> line(y).size() == firstLineSize);
     }
 
-    public Map<Position, Cell> getLine(int row) {
+    public Map<Position, Cell> line(int row) {
         return this.cells.entrySet().stream()
-                .filter(entry -> entry.getKey().y() == row)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .filter(cell -> cell.getKey().y() == row)
+                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
-    private Map<Position, Cell> getColumn(int index) {
+    private Map<Position, Cell> column(int index) {
         return this.cells.entrySet().stream()
                 .filter(entry -> entry.getKey().x() == index)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     public Stream<Cell> liveNeighboursAround(Position position) {
@@ -61,6 +64,12 @@ final class Grid {
 
     public Stream<Position> getAllPositions() {
         return this.cells.keySet().stream();
+    }
+
+    public Grid withCellAt(Cell cell, Position position) {
+        final var cloned = new Grid(this.cells);
+        cloned.cells.put(position, cell);
+        return cloned;
     }
 
     //region ToString & Equals & HashCode

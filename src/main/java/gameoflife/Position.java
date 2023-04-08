@@ -3,6 +3,8 @@ package gameoflife;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Optional.empty;
+
 final class Position {
     private static final Map<Integer, Position> _cache = new HashMap<>();
 
@@ -22,10 +24,11 @@ final class Position {
         return y;
     }
 
-    public static Position of(Integer x, Integer y) {
+    public static Optional<Position> of(Integer x, Integer y) {
+        if(x == null || y == null) return empty();
         final int hash = Objects.hash(x, y);
         if(!Position._cache.containsKey(hash)) Position._cache.put(hash, new Position(x,y));
-        return Position._cache.get(hash);
+        return Optional.ofNullable(Position._cache.get(hash));
     }
 
     /**
@@ -39,7 +42,7 @@ final class Position {
                 Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
                 Position.of(x-1, y), Position.of(x+1, y),
                 Position.of(x-1, y+1), Position.of(x, y+1), Position.of(x+1, y+1)
-        );
+        ).filter(Optional::isPresent).map(Optional::get);
     }
 
     @Override

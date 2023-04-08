@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 interface GridSerializer {
     public static String serialize(Grid grid) {
         return IntStream.range(0, grid.height)
-                .mapToObj(grid::getLine)
+                .mapToObj(grid::line)
                 .map(GridSerializer::cellsToListOfString)
                 .map(line -> String.join(" ", line))
                 .collect(Collectors.joining("\n"));

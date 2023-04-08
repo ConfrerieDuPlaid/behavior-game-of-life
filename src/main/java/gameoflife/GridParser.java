@@ -6,12 +6,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-final class GridParser {
-    private GridParser() {
-        throw new AssertionError(); // Interrupt instantiation
-    }
-
-    public static Optional<Grid> fromString(String stringGrid) {
+interface GridParser {
+    static Optional<Grid> fromString(String stringGrid) {
+        if (stringGrid == null) return Optional.empty();
         final var lines = stringGrid.split("\n");
         final var cells = IntStream
                 .range(0, lines.length)
@@ -32,8 +29,9 @@ final class GridParser {
 
         final var map = new HashMap<Position, Cell>();
         IntStream.range(0, cells.size())
-                .forEach(columnIndex -> map.put(Position.of(columnIndex,lineIndex), cells.get(columnIndex)));
-
+                .mapToObj(columnIndex -> Position.of(columnIndex,lineIndex))
+                .filter(Optional::isPresent).map(Optional::get)
+                .forEach(position -> map.put(position, cells.get(position.x())));
         return map;
     }
 }

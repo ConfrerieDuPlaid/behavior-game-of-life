@@ -26,14 +26,6 @@ final class Cell {
          };
     }
 
-    public static Optional<Cell> fromString(String state) {
-        return switch (state) {
-            case "dead" -> Optional.of(dead);
-            case "alive" -> Optional.of(alive);
-            default -> Optional.empty();
-        };
-    }
-
     @Override
     public String toString() {
         return this.state == State.ALIVE
