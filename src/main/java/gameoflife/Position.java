@@ -24,11 +24,10 @@ final class Position {
         return y;
     }
 
-    public static Optional<Position> of(Integer x, Integer y) {
-        if(x == null || y == null) return empty();
+    public static Position of(int x, int y) {
         final int hash = Objects.hash(x, y);
         if(!Position._cache.containsKey(hash)) Position._cache.put(hash, new Position(x,y));
-        return Optional.ofNullable(Position._cache.get(hash));
+        return Position._cache.get(hash);
     }
 
     /**
@@ -42,7 +41,7 @@ final class Position {
                 Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
                 Position.of(x-1, y), Position.of(x+1, y),
                 Position.of(x-1, y+1), Position.of(x, y+1), Position.of(x+1, y+1)
-        ).filter(Optional::isPresent).map(Optional::get);
+        );
     }
 
     @Override

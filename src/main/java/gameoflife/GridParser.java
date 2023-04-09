@@ -2,9 +2,11 @@ package gameoflife;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toMap;
 
 interface GridParser {
     static Optional<Grid> fromString(String stringGrid) {
@@ -12,14 +14,14 @@ interface GridParser {
         final var lines = stringGrid.split("\n");
         final var cells = IntStream
                 .range(0, lines.length)
-                .mapToObj(y -> GridParser.stringLineToCells(y, lines[y]))
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .mapToObj(y -> GridParser.lineToRow(y, lines[y]))
+                .flatMap(lineOfCells -> lineOfCells.entrySet().stream())
+                .collect(toMap(Entry::getKey, Entry::getValue));
 
         return Grid.of(cells);
     }
 
-    private static Map<Position, Cell> stringLineToCells(int lineIndex, String line) {
+    private static Map<Position, Cell> lineToRow(int rowIndex, String line) {
         final var cells = line
                 .chars()
                 .filter(c -> c == '.' || c == '*')
@@ -29,8 +31,7 @@ interface GridParser {
 
         final var map = new HashMap<Position, Cell>();
         IntStream.range(0, cells.size())
-                .mapToObj(columnIndex -> Position.of(columnIndex,lineIndex))
-                .filter(Optional::isPresent).map(Optional::get)
+                .mapToObj(columnIndex -> Position.of(columnIndex,rowIndex))
                 .forEach(position -> map.put(position, cells.get(position.x())));
         return map;
     }

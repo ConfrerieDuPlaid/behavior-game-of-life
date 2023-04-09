@@ -20,7 +20,7 @@ public class SerializationStepDefinitions {
         final var cells = new HashMap<Position, Cell>();
         range(0, columns)
                 .forEach(x -> range(0, rows)
-                .forEach(y -> cells.put(Position.of(x,y).get(), state)));
+                .forEach(y -> cells.put(Position.of(x,y), state)));
         this.grid = Grid.of(cells).get();
     }
 
@@ -42,6 +42,6 @@ public class SerializationStepDefinitions {
 
     @ParameterType("middle")
     public Position middle(String middle){
-        return Position.of(this.grid.width/2, this.grid.height/2).get();
+        return Position.of(this.grid.width/2, this.grid.height/2);
     }
 }
