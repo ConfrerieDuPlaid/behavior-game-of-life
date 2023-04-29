@@ -6,7 +6,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.util.HashMap;
-import java.util.stream.IntStream;
 
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +19,7 @@ public class SerializationStepDefinitions {
         final var cells = new HashMap<Position, Cell>();
         range(0, columns)
                 .forEach(x -> range(0, rows)
-                .forEach(y -> cells.put(Position.of(x,y), state)));
+                .forEach(y -> cells.put(Position.at(x,y), state)));
         this.grid = Grid.of(cells).get();
     }
 
@@ -42,6 +41,6 @@ public class SerializationStepDefinitions {
 
     @ParameterType("middle")
     public Position middle(String middle){
-        return Position.of(this.grid.width/2, this.grid.height/2);
+        return Position.at(this.grid.width/2, this.grid.height/2);
     }
 }

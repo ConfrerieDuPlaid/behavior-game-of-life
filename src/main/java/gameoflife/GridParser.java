@@ -31,7 +31,7 @@ interface GridParser {
 
         final var map = new HashMap<Position, Cell>();
         IntStream.range(0, cells.size())
-                .mapToObj(columnIndex -> Position.of(columnIndex,rowIndex))
+                .mapToObj(columnIndex -> Position.at(columnIndex,rowIndex))
                 .forEach(position -> map.put(position, cells.get(position.x())));
         return map;
     }

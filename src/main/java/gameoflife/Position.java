@@ -3,8 +3,6 @@ package gameoflife;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static java.util.Optional.empty;
-
 final class Position {
     private static final Map<Integer, Position> _cache = new HashMap<>();
 
@@ -24,7 +22,7 @@ final class Position {
         return y;
     }
 
-    public static Position of(int x, int y) {
+    public static Position at(int x, int y) {
         final int hash = Objects.hash(x, y);
         if(!Position._cache.containsKey(hash)) Position._cache.put(hash, new Position(x,y));
         return Position._cache.get(hash);
@@ -38,9 +36,9 @@ final class Position {
         // [x-1,  y] | ~~~~~~~ | [x+1,  y]
         // [x-1,y+1] | [x,y+1] | [x+1,y+1]
         return Stream.of(
-                Position.of(x-1, y-1), Position.of(x, y-1), Position.of(x+1, y-1),
-                Position.of(x-1, y), Position.of(x+1, y),
-                Position.of(x-1, y+1), Position.of(x, y+1), Position.of(x+1, y+1)
+                Position.at(x-1, y-1), Position.at(x, y-1), Position.at(x+1, y-1),
+                Position.at(x-1, y), Position.at(x+1, y),
+                Position.at(x-1, y+1), Position.at(x, y+1), Position.at(x+1, y+1)
         );
     }
 
