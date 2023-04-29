@@ -5,10 +5,10 @@ import java.util.HashMap;
 import static gameoflife.Cell.alive;
 import static gameoflife.Cell.dead;
 
-public class Persona {
+final class Persona {
 
-    public static Grid deadGrid = gridOfDeadCells(4, 6);
-    public static Grid liveGrid = gridOfLiveCells(4, 6);
+    public final static Grid deadGrid = gridOfDeadCells(4, 6);
+    public final static Grid liveGrid = gridOfLiveCells(4, 6);
 
 
     public static Grid grid(Cell state, int rows, int columns) {

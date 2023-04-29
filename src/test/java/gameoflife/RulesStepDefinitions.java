@@ -13,13 +13,13 @@ public class RulesStepDefinitions {
 
     @Given("the grid")
     public void the_grid(String grid) {
-        this.grid = GridParser.fromString(grid).get();
+        this.generation = new Generation(GridParser.fromString(grid).get());
     }
 
 
     @When("calculating the next generation")
     public void calculating_the_next_generation() {
-        this.generation = new Generation(this.grid).next();
+        this.generation = this.generation.next();
     }
 
 
