@@ -12,6 +12,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class GridSerializerTest {
 
     @Test
+    void liveCellShouldBeSerializedToStar() {
+        assertEquals("*", GridSerializer.cellToString(alive));
+    }
+
+    @Test
+    void deadCellShouldBeSerializedToDot() {
+        assertEquals(".", GridSerializer.cellToString(dead));
+    }
+
+    @Test
     void serializeGridOfDeadCellsShouldBeStringOfDots() {
         assertEquals(
                 """
@@ -37,7 +47,7 @@ class GridSerializerTest {
 
     @Test
     void serializeGridOfDeadCellsWithOneCellAliveShouldBeStringOfDotsWithOneStar() {
-        final var gridOfDeadCells = Persona.gridOfDeadCells(3,3);
+        final var gridOfDeadCells = Grid.ofDeadCells(3,3).get();
         assertEquals(
                 """
                         . . .
@@ -49,7 +59,7 @@ class GridSerializerTest {
 
     @Test
     void serializeGridOfLiveCellsWithOneDeadCellShouldBeStringOfStarsWithOneDot() {
-        final var gridOfLiveCells = Persona.gridOfLiveCells(3,3);
+        final var gridOfLiveCells = Grid.ofLiveCells(3,3).get();
         assertEquals(
                 """
                         * * *

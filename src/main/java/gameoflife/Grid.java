@@ -4,12 +4,13 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
+import static gameoflife.Position.at;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
 
 final class Grid {
 
-    private final Map<Position, Cell> cells;
+    protected final Map<Position, Cell> cells;
     public final Integer height;
     public final Integer width;
 
@@ -21,19 +22,38 @@ final class Grid {
     }
 
     // static factory method
-    public static Optional<Grid> of(Map<Position, Cell> cells) {
-        final var grid = new Grid(cells);
-        return grid.isValid()
-                ? Optional.of(grid)
-                : Optional.empty();
+    public static Optional<Grid> ofDeadCells(int rows, int columns) {
+        if(rows < 1 || columns < 1) return Optional.empty();
+
+        final var cells = new HashMap<Position, Cell>();
+        range(0, rows)
+                .forEach(row -> range(0, columns)
+                        .forEach(column -> cells.put(at(column, row), Cell.dead)));
+        return Optional.of(new Grid(cells));
     }
 
-    private boolean isValid() {
-        // TODO
-        if(this.cells.isEmpty()) return false;
+    public static Optional<Grid> ofLiveCells(int rows, int columns) {
+        if(rows < 1 || columns < 1) return Optional.empty();
 
-        final int firstLineSize = this.line(0).size();
-        return range(0, this.height).allMatch(y -> line(y).size() == firstLineSize);
+        final var cells = new HashMap<Position, Cell>();
+        range(0, rows)
+                .forEach(row -> range(0, columns)
+                        .forEach(column -> cells.put(at(column, row), Cell.alive)));
+        return Optional.of(new Grid(cells));
+    }
+
+    public static Optional<Grid> of(Map<Position, Cell> cells) {
+        if(!Grid.cellsAreValid(cells)) return Optional.empty();
+        return Optional.of(new Grid(cells));
+    }
+
+    private static boolean cellsAreValid(Map<Position, Cell> cells) {
+        if(cells == null || cells.isEmpty()) return false;
+
+        final var noNullPosition = cells.keySet().stream().allMatch(Objects::nonNull);
+        final var noNullCell = cells.values().stream().allMatch(Objects::nonNull);
+
+        return noNullPosition && noNullCell;
     }
 
     public Map<Position, Cell> line(int row) {

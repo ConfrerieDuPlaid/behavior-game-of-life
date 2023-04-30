@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static gameoflife.Cell.alive;
+import static gameoflife.Cell.dead;
 import static java.util.stream.Collectors.toMap;
 
 interface GridParser {
@@ -25,7 +27,7 @@ interface GridParser {
         final var cells = line
                 .chars()
                 .filter(c -> c == '.' || c == '*')
-                .mapToObj(Cell::fromChar)
+                .mapToObj(GridParser::cellFromChar)
                 .flatMap(Optional::stream)
                 .toList();
 
@@ -34,5 +36,13 @@ interface GridParser {
                 .mapToObj(columnIndex -> Position.at(columnIndex,rowIndex))
                 .forEach(position -> map.put(position, cells.get(position.x())));
         return map;
+    }
+
+    public static Optional<Cell> cellFromChar(int c) {
+        return switch (c) {
+            case '.' -> Optional.of(dead);
+            case '*' -> Optional.of(alive);
+            default -> Optional.empty();
+        };
     }
 }

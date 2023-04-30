@@ -16,11 +16,9 @@ public class SerializationStepDefinitions {
 
     @Given("a {int}x{int} Grid of {cellState} cells")
     public void a_x_grid_of_cells(int rows, int columns, Cell state) {
-        final var cells = new HashMap<Position, Cell>();
-        range(0, columns)
-                .forEach(x -> range(0, rows)
-                .forEach(y -> cells.put(Position.at(x,y), state)));
-        this.grid = Grid.of(cells).get();
+        this.grid = state == Cell.alive
+                ? Grid.ofLiveCells(rows, columns).get()
+                : Grid.ofDeadCells(rows, columns).get();
     }
 
     @Given("a {cellState} cell in the {middle}")

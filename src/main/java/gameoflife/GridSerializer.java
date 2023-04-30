@@ -21,7 +21,13 @@ interface GridSerializer {
                 .stream()
                 .sorted(Comparator.comparingInt(p -> p.getKey().x()))
                 .map(Map.Entry::getValue)
-                .map(Cell::toString)
+                .map(GridSerializer::cellToString)
                 .toList();
+    }
+
+    public static String cellToString(Cell cell) {
+        return cell.isAlive()
+                ? "*"
+                : ".";
     }
 }

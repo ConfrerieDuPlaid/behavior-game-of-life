@@ -1,31 +1,9 @@
 package gameoflife;
 
-import java.util.HashMap;
-
 import static gameoflife.Cell.alive;
-import static gameoflife.Cell.dead;
 
 final class Persona {
 
-    public final static Grid deadGrid = gridOfDeadCells(4, 6);
-    public final static Grid liveGrid = gridOfLiveCells(4, 6);
-
-
-    public static Grid grid(Cell state, int rows, int columns) {
-        final var cells = new HashMap<Position, Cell>();
-        for (int row = 0; row < rows; row += 1) {
-            for (int column = 0; column < columns; column += 1) {
-                cells.put(Position.at(column,row), state);
-            }
-        }
-        return Grid.of(cells).get();
-    }
-
-    public static Grid gridOfDeadCells(int rows, int columns) {
-        return grid(dead, rows, columns);
-    }
-
-    public static Grid gridOfLiveCells(int rows, int columns) {
-        return grid(alive, rows, columns);
-    }
+    public final static Grid deadGrid = Grid.ofDeadCells(4, 6).get();
+    public final static Grid liveGrid = Grid.ofLiveCells(4, 6).get();
 }
