@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toMap;
 interface GridParser {
     static Optional<Grid> fromString(String stringGrid) {
         if (stringGrid == null) return Optional.empty();
-        final var lines = stringGrid.split("\n");
+        final var lines = stringGrid.trim().split("\n");
         final var cells = IntStream
                 .range(0, lines.length)
                 .mapToObj(y -> GridParser.lineToRow(y, lines[y]))
