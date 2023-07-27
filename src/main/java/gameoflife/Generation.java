@@ -1,6 +1,5 @@
 package gameoflife;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 import static gameoflife.Cell.alive;
@@ -21,18 +20,18 @@ final class Generation {
         final var nextGrid = this.grid.getAllPositions()
                 .reduce(
                         this.grid,
-                        (Grid acc, Position next) -> this.gridWithNextCellAt(acc, next).orElse(acc),
+                        (Grid acc, Position next) -> this.gridWithCellInNextStateAt(acc, next).orElse(acc),
                         (oldGrid, gridWithNextCell) -> gridWithNextCell
                 );
         return new Generation(nextGrid);
     }
 
-    private Optional<Grid> gridWithNextCellAt(Grid grid, Position position) {
-        final var nextCell = nextCellAt(position);
-        return nextCell.map(cell -> grid.withCellAt(cell, position));
+    private Optional<Grid> gridWithCellInNextStateAt(Grid grid, Position position) {
+        final var cellInNextState = cellInNextStateAt(position);
+        return cellInNextState.map(cell -> grid.withCellAt(cell, position));
     }
 
-    private Optional<Cell> nextCellAt(Position position) {
+    private Optional<Cell> cellInNextStateAt(Position position) {
         final var cell = this.grid.cellAt(position);
         if(cell.isEmpty()) return Optional.empty();
 
